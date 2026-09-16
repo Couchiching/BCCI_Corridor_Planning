@@ -1,0 +1,36 @@
+﻿Theme,Dataset_or_Information,Requested_By,CC_Data,Notes
+Partner geography,Land trust operational areas,CC / NLT,,NLT service area received; KLT not yet received
+Protected & conserved areas,Land trust protected properties / land interests,CC / NLT,Nature_Reserve_Land_Parcel (NR),NLT land-interest data received; KLT not yet received
+Protected & conserved areas,Ganaraska Region Conservation Authority,NLT,,Permission / data-sharing required
+Protected & conserved areas,Lower Trent Conservation — Natural Habitat Areas / Conservation Areas,NLT,,
+Protected & conserved areas,NCC protected land,NLT,ProtectedConservedArea_2023 (ProConsArea),NLT notes available through CPCAD
+Protected & conserved areas,Oak Ridges Moraine Land Trust protected land,NLT,,Permission / data-sharing required
+Protected & conserved areas,Ducks Unlimited Canada protected land,NLT,ProtectedConservedArea_2023 (ProConsArea),NLT notes available through CPCAD
+Protected & conserved areas,Provincially regulated / protected areas,NLT,ProtectedConservedArea_2023 (ProConsArea),Provincial parks; wilderness areas; wildlife areas; conservation reserves
+Protected & conserved areas,County Agreement Forest,NLT,,
+Protected & conserved areas,Alderville Black Oak Savanna,NLT,,
+Protected & conserved areas,Northumberland County Forest,NLT,,
+Protected & conserved areas,Crown land,CC,Crown land (crown),
+Significant ecological areas,Significant plant communities,NLT,Provincially Tracked Plant Community Occurrences (PTPlantCom),Tall-grass prairie; savannah; oak woodland; open beach and dune communities; permission / data-sharing required
+Significant ecological areas,Natural shorelines,NLT,OHN_Waterbody_CCRegion (OHN_waterbody),Lake Ontario; Rice Lake; Trent River
+Significant ecological areas,Lake Ontario Coastal Wetland,NLT,,
+Significant ecological areas,Oak Ridges Moraine — Core & Linkage Areas,NLT,,
+Significant ecological areas,Significant Woodlands,NLT,,Identified by Northumberland County; permission / data-sharing required
+Ecological priorities,Provincially Significant Wetlands,NLT,Wetland_CCRegion (Prov_wetland),
+Ecological priorities,Locally or regionally significant wetlands,NLT,,
+Ecological priorities,Cold water streams,NLT,OHN_Watercourse_CCRegion (OHN_watercourse),NLT identifies Ontario aquatic ecosystem classification dataset
+Ecological priorities,Riparian buffers,NLT,OHN_Watercourse_CCRegion (OHN_watercourse),
+Ecological priorities,Areas of Natural and Scientific Interest (ANSI),NLT,Areas_of_Natural_and_Scientific_Interest_ANSI (ANSI),
+Ecological priorities,Groundwater recharge areas,NLT,Significant_Groundwater_Recharge_Area_(SGRA) (SGRA),
+Ecological priorities,Areas of high Species at Risk concentration,NLT,PTSpecies_Observations (PTSpp_low / PTSpp_med / PTSpp_high),Permission / data-sharing required for NLT-identified dataset
+Complementary CC data,Critical Habitat,CC,CriticalHabitatArea (Crit_Hab),
+Complementary CC data,Canadian Important Bird Areas,CC,Canadian_Important_Bird_Areas_17N (birds),
+Complementary CC data,Natural Heritage System,CC,Natural Heritage System (NHS),
+Complementary CC data,Habitat Types,CC,SOLRIS_Version_3_0_UTM17N_Clipped (SOLRIS),
+Complementary CC data,High Value Habitat — Biodiversity Areas,CC,BCR12_HighValue_BiodiversityArea (HVH_biodiv),
+Complementary CC data,High Value Habitat — Forest,CC,BCR12_HighValueHabitat_Forest (HVH_for),
+Complementary CC data,High Value Habitat — Grassland,CC,BCR12_HighValueHabitat_Grassland (HVH_grass),
+Complementary CC data,High Value Habitat — Wetland,CC,BCR12_HighValueHabitat_Wetland (HVH_wet),
+Exclusions,Licensed aggregate pits and quarries,NLT,AGG_EXTRACTION_AREA (aggregate_extraction),
+Exclusions,Major roads,NLT,Roads,
+Exclusions,Settlement areas and other non-natural land cover,NLT,SOLRIS_Version_3_0_UTM17N_Clipped (SOLRIS),
