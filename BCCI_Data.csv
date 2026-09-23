@@ -1,0 +1,4 @@
+Information,file_path,Layer,Short_Name,Label,Group,Sensitive,Source,Merge
+,C:\Users\ConservAnalyst\Documents\ConservationAnalyst\GISDatabase\Baselayers\AEC\AEC_V3_GeoHub_Rev0_GPKG_Package04_LakeHuronSouth\w14_Georgian_Bay_South_Simcoe\w14_AEC_V3_GeoHub_Rev0.gpkg\main.w14_Reach_SimpleGeometry_GeoHub,,,,Ecological Priorities,,,AEC
+,C:\Users\ConservAnalyst\Documents\ConservationAnalyst\GISDatabase\Baselayers\AEC\AEC_V3_GeoHub_Rev0_GPKG_Package02_LakeOntario\w04_Lake_Ontario_Central\w04_AEC_V3_GeoHub_Rev0.gpkg\main.w04_Reach_SimpleGeometry_GeoHub,,,,,,,AEC
+,C:\Users\ConservAnalyst\Documents\ConservationAnalyst\GISDatabase\Baselayers\AEC\AEC_V3_GeoHub_Rev0_GPKG_Package02_LakeOntario\w05_Lake_Ontario_Kawarthas\w05_AEC_V3_GeoHub_Rev0.gpkg\main.w05_Reach_SimpleGeometry_GeoHub,,,,,,,AEC
