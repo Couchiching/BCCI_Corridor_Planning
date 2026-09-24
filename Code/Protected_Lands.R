@@ -22,7 +22,7 @@ base <- "C:/Users/ConservAnalyst/Documents/ConservationAnalyst"
 out <- file.path(base, "GISDatabase/CorridorMapping/Standardized")
 dir.create(out, recursive = TRUE, showWarnings = FALSE)
 
-gpkg <- file.path(out, "BCCI_Regional_Baseline_v2.gpkg")
+gpkg <- file.path(out, "BCCI_Regional_Baseline.gpkg")
 
 target_crs <- 26917
 
