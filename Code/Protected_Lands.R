@@ -1,4 +1,3 @@
-
 library(sf)
 library(dplyr)
 library(purrr)
@@ -6,18 +5,12 @@ library(purrr)
 # ============================================================
 # BCCI — REGIONAL CONSERVATION BASELINE
 # ============================================================
-# Partners: Couchiching Conservancy (CC)
-#           Northumberland Land Trust (NLT)
-#           Kawartha Land Trust (KLT)
-#
+# Partners: CC, NLT, KLT
 # CRS: NAD83 / UTM Zone 17N (EPSG:26917)
 #
 # Outputs:
-#   BCCI_Regional_Baseline.gpkg
+#   BCCI_Regional_Baseline_v2.gpkg
 #   BCCI_Regional_Baseline_QA.csv
-#
-# KLT properties are provisional (CPCAD 2025).
-# Replace with partner-provided data when available.
 # ============================================================
 
 # ------------------------------------------------------------
@@ -29,10 +22,8 @@ base <- "C:/Users/ConservAnalyst/Documents/ConservationAnalyst"
 out <- file.path(base, "GISDatabase/CorridorMapping/Standardized")
 dir.create(out, recursive = TRUE, showWarnings = FALSE)
 
-gpkg <- file.path(
-  out,
-  "BCCI_Regional_Baseline_v2.gpkg"
-)
+gpkg <- file.path(out, "BCCI_Regional_Baseline_v2.gpkg")
+
 target_crs <- 26917
 
 cc_gdb <- file.path(
@@ -42,12 +33,6 @@ cc_gdb <- file.path(
 index_path <- file.path(
   base,
   "GISDatabase/CouchichingData/MapSeries_Index/Master_Property_Index.gpkg"
-)
-
-cpcad_gdb <- file.path(
-  base,
-  "GISDatabase/Baselayers/Canadian_Protected_Conserved_Areas_CPCAD",
-  "ProtectedConservedArea_2025/ProtectedConservedArea_2025.gdb"
 )
 
 # ------------------------------------------------------------
@@ -77,11 +62,18 @@ sources <- list(
   
   KLT_Operational_Area = list(
     path = file.path(
-      base,
-      "GISDatabase - Copy/CouchichingData/Other_Orgs/KLT_QE2/KLT_Boundary.shp"
+      base, "GISDatabase/Partner Data/KLT/KLT_ServiceArea.shp"
     ),
-    layer = "KLT_Boundary"
+    layer = "KLT_ServiceArea"
+  ),
+  
+  KLT_Properties = list(
+    path = file.path(
+      base, "GISDatabase/Partner Data/KLT/KLT_ProtectedProperties.shp"
+    ),
+    layer = "KLT_ProtectedProperties"
   )
+  
 )
 
 # ------------------------------------------------------------
@@ -89,6 +81,10 @@ sources <- list(
 # ------------------------------------------------------------
 
 read_standardized <- function(path, layer) {
+  
+  if (!file.exists(path)) {
+    stop("Source not found: ", path)
+  }
   
   x <- st_read(path, layer = layer, quiet = TRUE)
   
@@ -99,11 +95,35 @@ read_standardized <- function(path, layer) {
   st_transform(x, target_crs)
 }
 
-# Read operational areas and NLT properties.
 data <- imap(
   sources,
   ~ read_standardized(.x$path, .x$layer)
 )
+
+# ------------------------------------------------------------
+# KLT GEOMETRY REPAIR
+# ------------------------------------------------------------
+# Ston(e)y Lake Family Forest contains a ring self-intersection
+# at X: 730055.2415, Y: 4939084.5446 (EPSG:26917).
+#
+# Identified by sf/GEOS and visually inspected in ArcGIS Pro
+# on September 24, 2026.
+#
+# Repair applies only to the standardized working copy.
+# Original KLT shapefile remains unchanged.
+# ------------------------------------------------------------
+
+klt <- data$KLT_Properties
+
+invalid <- which(!st_is_valid(klt))
+
+if (length(invalid) > 0) {
+  klt[invalid, ] <- st_make_valid(klt[invalid, ])
+}
+
+stopifnot(all(st_is_valid(klt)))
+
+data$KLT_Properties <- klt
 
 # ------------------------------------------------------------
 # 4. CC PROPERTIES — MASTER INDEX
@@ -121,48 +141,8 @@ if (nrow(data$CC_Properties) == 0) {
 }
 
 # ------------------------------------------------------------
-# 5. CPCAD 2025
+# 5. COMBINED REGIONAL AOI
 # ------------------------------------------------------------
-
-cpcad <- read_standardized(
-  cpcad_gdb,
-  "ProtectedConservedArea_2025"
-)
-
-# Provisional KLT holdings: ownership or management.
-data$KLT_Properties <- cpcad |>
-  filter(
-    if_any(
-      any_of(c("OWNER_E", "MGMT_E")),
-      ~ grepl(
-        "Kawartha Land Trust",
-        coalesce(as.character(.x), ""),
-        ignore.case = TRUE
-      )
-    )
-  )
-
-if (nrow(data$KLT_Properties) == 0) {
-  stop("No KLT properties identified in CPCAD.")
-}
-
-cat("\nKLT properties identified:\n")
-
-data$KLT_Properties |>
-  st_drop_geometry() |>
-  as_tibble() |>
-  select(any_of(c(
-    "NAME_E", "OWNER_E", "MGMT_E", "STATUS"
-  ))) |>
-  print(n = Inf, width = Inf)
-
-
-# ------------------------------------------------------------
-# 6. COMBINED REGIONAL AOI
-# ------------------------------------------------------------
-
-# Combine the three operational areas.
-# Retain individual boundaries in their original layers.
 
 areas <- bind_rows(
   map(
@@ -175,31 +155,21 @@ areas <- bind_rows(
   )
 )
 
-# Repair geometries before union.
 areas <- st_make_valid(areas)
 
-regional_aoi <- st_sf(
+data$Regional_AOI <- st_sf(
   Name = "BCCI Regional Operational Area",
   geometry = st_union(st_geometry(areas))
 )
 
-data$Regional_AOI <- regional_aoi
-
-
 # ------------------------------------------------------------
-# 7. REGIONAL CPCAD BASELINE
+# 6. EXPORT GEOPACKAGE AND QA
 # ------------------------------------------------------------
 
-# Select protected/conserved areas intersecting the AOI.
-# Retain complete polygons rather than clipping boundaries.
-
-data$Regional_CPCAD <- cpcad[
-  lengths(st_intersects(cpcad, regional_aoi)) > 0,
-]
-
-# ------------------------------------------------------------
-# 8. EXPORT GEOPACKAGE
-# ------------------------------------------------------------
+# Remove previous output to avoid retaining obsolete layers.
+if (file.exists(gpkg)) {
+  file.remove(gpkg)
+}
 
 summary <- imap_dfr(data, function(x, name) {
   
@@ -224,10 +194,11 @@ summary <- imap_dfr(data, function(x, name) {
     Unknown_Validity = sum(is.na(valid)),
     CRS_OK = isTRUE(st_crs(y) == st_crs(target_crs))
   )
+  
 })
 
 # ------------------------------------------------------------
-# 9. QUALITY ASSURANCE
+# 7. QUALITY ASSURANCE
 # ------------------------------------------------------------
 
 print(summary, n = Inf, width = Inf)
